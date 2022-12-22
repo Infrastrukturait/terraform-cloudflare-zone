@@ -16,7 +16,6 @@
     "docs/terraform.md"
   ],
   "license": "GPLv3",
-  "logo": "",
   "name": "terraform-cloudflare-zone",
   "repo_url": "https://github.com/Infrastrukturait/terraform-cloudflare-zone"
 }

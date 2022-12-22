@@ -5,6 +5,7 @@ variable "zone" {
 
 variable "account_id" {
   type        = string
+  default     = ""
   description = "Account ID to manage the zone resource in. You can get more information on how to find `account_id` at [this page](https://developers.cloudflare.com/fundamentals/get-started/basic-tasks/find-account-and-zone-ids/)."
 }
 
