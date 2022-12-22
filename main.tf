@@ -18,7 +18,7 @@ resource "cloudflare_zone_dnssec" "this" {
 }
 
 resource "cloudflare_record" "this" {
-  for_each = var.records != null ? { for record in var.records : record.record_name => record } : {}
+  for_each = var.records != null ? { for record in var.records : record.name => record } : {}
 
   zone_id = local.zone_id
 
