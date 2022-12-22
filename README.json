@@ -1,11 +1,22 @@
 {
-  "name": "",
-  "repo_url": "",
+  "authors": [
+    {
+      "email": "rafal@masiarek.pl",
+      "github": "rafalmasiarek",
+      "name": "Rafa\u0142 Masiarek",
+      "website": "https://masiarek.pl"
+    }
+  ],
+  "context": [
+    "## About",
+    "Terraform module to provision a CloudFlare zone with DNS record managment"
+  ],
+  "includes": [
+    "docs/notes.md",
+    "docs/terraform.md"
+  ],
   "license": "GPLv3",
   "logo": "",
-  "badges": [],
-  "includes": [],
-  "authors": [],
-  "context": [],
-  "references": []
+  "name": "terraform-cloudflare-zone",
+  "repo_url": "https://github.com/Infrastrukturait/terraform-cloudflare-zone"
 }
