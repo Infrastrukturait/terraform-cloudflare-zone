@@ -42,7 +42,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_cloudflare"></a> [cloudflare](#provider\_cloudflare) | >= 3.23 |
+| <a name="provider_cloudflare"></a> [cloudflare](#provider\_cloudflare) | 3.30.0 |
 
 ### Modules
 
@@ -59,15 +59,15 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_allow_overwrite"></a> [allow\_overwrite](#input\_allow\_overwrite) | n/a | `bool` | `false` | no |
-| <a name="input_data"></a> [data](#input\_data) | n/a | <pre>list(object({<br>      algorithm      = optional(number)<br>      altitude       = optional(number)<br>      certificate    = optional(string)<br>      content        = optional(string)<br>      digest         = optional(string)<br>      digest_type    = optional(number)<br>      fingerprint    = optional(string)<br>      flags          = optional(string)<br>      key_tag        = optional(number)<br>      lat_degrees    = optional(number)<br>      lat_direction  = optional(string)<br>      lat_minutes    = optional(number)<br>      lat_seconds    = optional(number)<br>      long_degrees   = optional(number)<br>      long_direction = optional(string)<br>      long_minutes   = optional(number)<br>      long_seconds   = optional(number)<br>      matching_type  = optional(number)<br>      name           = optional(string)<br>      order          = optional(number)<br>      port           = optional(number)<br>      precision_horz = optional(number)<br>      precision_vert = optional(number)<br>      preference     = optional(number)<br>      priority       = optional(number)<br>      proto          = optional(string)<br>      protocol       = optional(number)<br>      public_key     = optional(string)<br>      regex          = optional(string)<br>      replacement    = optional(string)<br>      selector       = optional(number)<br>      service        = optional(string)<br>      size           = optional(number)<br>      tag            = optional(string)<br>      target         = optional(string)<br>      type           = optional(number)<br>      usage          = optional(number)<br>      value          = optional(string)<br>      weight         = optional(number)<br>  }))</pre> | `[]` | no |
-| <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | n/a | `string` | n/a | yes |
-| <a name="input_name"></a> [name](#input\_name) | n/a | `string` | n/a | yes |
-| <a name="input_priority"></a> [priority](#input\_priority) | n/a | `number` | `1` | no |
-| <a name="input_proxied"></a> [proxied](#input\_proxied) | n/a | `bool` | `false` | no |
-| <a name="input_ttl"></a> [ttl](#input\_ttl) | n/a | `number` | `1` | no |
-| <a name="input_type"></a> [type](#input\_type) | n/a | `string` | n/a | yes |
-| <a name="input_value"></a> [value](#input\_value) | n/a | `string` | n/a | yes |
+| <a name="input_allow_overwrite"></a> [allow\_overwrite](#input\_allow\_overwrite) | Allow creation of this record in Terraform to overwrite an existing record, if any. | `bool` | `false` | no |
+| <a name="input_data"></a> [data](#input\_data) | Map of metadata for a record. | <pre>list(object({<br>    algorithm      = optional(number)<br>    altitude       = optional(number)<br>    certificate    = optional(string)<br>    content        = optional(string)<br>    digest         = optional(string)<br>    digest_type    = optional(number)<br>    fingerprint    = optional(string)<br>    flags          = optional(string)<br>    key_tag        = optional(number)<br>    lat_degrees    = optional(number)<br>    lat_direction  = optional(string)<br>    lat_minutes    = optional(number)<br>    lat_seconds    = optional(number)<br>    long_degrees   = optional(number)<br>    long_direction = optional(string)<br>    long_minutes   = optional(number)<br>    long_seconds   = optional(number)<br>    matching_type  = optional(number)<br>    name           = optional(string)<br>    order          = optional(number)<br>    port           = optional(number)<br>    precision_horz = optional(number)<br>    precision_vert = optional(number)<br>    preference     = optional(number)<br>    priority       = optional(number)<br>    proto          = optional(string)<br>    protocol       = optional(number)<br>    public_key     = optional(string)<br>    regex          = optional(string)<br>    replacement    = optional(string)<br>    selector       = optional(number)<br>    service        = optional(string)<br>    size           = optional(number)<br>    tag            = optional(string)<br>    target         = optional(string)<br>    type           = optional(number)<br>    usage          = optional(number)<br>    value          = optional(string)<br>    weight         = optional(number)<br>  }))</pre> | `[]` | no |
+| <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | Domain name to which we will add the record. | `string` | n/a | yes |
+| <a name="input_name"></a> [name](#input\_name) | The name of the record. | `string` | n/a | yes |
+| <a name="input_priority"></a> [priority](#input\_priority) | The priority of the record. Default value is `1`. | `number` | `1` | no |
+| <a name="input_proxied"></a> [proxied](#input\_proxied) | Set the record to gets Cloudflare's origin protection | `bool` | `false` | no |
+| <a name="input_ttl"></a> [ttl](#input\_ttl) | The TTL of the record. Default value is `1`. | `number` | `1` | no |
+| <a name="input_type"></a> [type](#input\_type) | The type of the record. | `string` | n/a | yes |
+| <a name="input_value"></a> [value](#input\_value) | The value of the record. | `string` | n/a | yes |
 
 ### Outputs
 
@@ -81,6 +81,7 @@ No modules.
 | <a name="output_record_proxiable"></a> [record\_proxiable](#output\_record\_proxiable) | Show record is proxied. |
 
 <!-- END_TF_DOCS -->
+
 
 <!-- references -->
 
