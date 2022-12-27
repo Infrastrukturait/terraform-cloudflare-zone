@@ -14,7 +14,8 @@
   "includes": [
     "docs/submodules.md",
     "docs/notes.md",
-    "docs/terraform.md"
+    "docs/terraform.md",
+    "docs/import.md"
   ],
   "license": "GPLv3",
   "name": "terraform-cloudflare-zone",
