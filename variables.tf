@@ -50,9 +50,10 @@ variable "enable_dnssec" {
 
 variable "records" {
   type = list(object({
-    name  = string
-    type  = string
-    value = optional(string)
+    record_name = string
+    type        = string
+    name        = optional(string)
+    value       = optional(string)
     data = optional(object({
       algorithm      = optional(number)
       altitude       = optional(number)
