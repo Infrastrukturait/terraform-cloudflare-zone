@@ -42,4 +42,4 @@ zoneid=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$1" \
 curl -s -L -X GET "https://api.cloudflare.com/client/v4/zones/${zoneid}/dns_records" \
      -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
      -H "Content-Type:application/json" | jq \
-     '[.result[] | .["record_name"] = "\(.name)_\(.type)_\(.id)" | .["type"] = .type | del(.id, .zone_id, .zone_name, .proxiable, .ttl, .locked, .meta, .created_on, .modified_on, .comment, .tags)]'
+     '[.result[] | .["record_name"] = "\(.name)_\(.type)_\(.id)" | del(.id, .zone_id, .zone_name, .proxiable, .ttl, .locked, .meta, .created_on, .modified_on, .comment, .tags)]'
