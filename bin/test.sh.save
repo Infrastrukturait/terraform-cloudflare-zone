@@ -1,0 +1,21 @@
+#!/bin/bash
+
+DOMAIN="$1"
+
+zoneid=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$DOMAIN" \
+  -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+  -H "Content-Type: application/json" | jq \
+  -r '{"result"}[] | .[0] | .id')
+
+
+records=$(curl -s -L -X GET "https://api.cloudflare.com/client/v4/zones/${zoneid}/dns_records" \
+     -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+     -H "Content-Type:application/json" | jq  -r '.result[] | "\(.name)_\(.type)_\(.id)|\(.id)"')
+
+
+for i in $records
+do
+  s=$(echo $i | awk -F'|' '{print $1}')
+  t=$(echo $i | awk -F'|' '{print $2}')
+  terraform import cloudflare_record.this[\"${s}\"] ${zoneid}/${t}
+done
