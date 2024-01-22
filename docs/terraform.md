@@ -9,12 +9,6 @@
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14 |
 | <a name="requirement_cloudflare"></a> [cloudflare](#requirement\_cloudflare) | >= 3.23 |
 
-### Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_cloudflare"></a> [cloudflare](#provider\_cloudflare) | 3.30.0 |
-
 ### Modules
 
 No modules.

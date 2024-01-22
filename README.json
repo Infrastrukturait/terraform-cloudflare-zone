@@ -3,7 +3,7 @@
     {
       "email": "rafal@masiarek.pl",
       "github": "rafalmasiarek",
-      "name": "Rafa\u0142 Masiarek",
+      "name": "Rafał Masiarek",
       "website": "https://masiarek.pl"
     }
   ],
@@ -17,7 +17,7 @@
     "docs/terraform.md",
     "docs/import.md"
   ],
-  "license": "GPLv3",
+  "license": "MIT",
   "name": "terraform-cloudflare-zone",
   "repo_url": "https://github.com/Infrastrukturait/terraform-cloudflare-zone"
 }

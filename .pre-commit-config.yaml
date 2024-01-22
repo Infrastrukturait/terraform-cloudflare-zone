@@ -21,11 +21,12 @@ repos:
       exclude: CHANGELOG.md
     - id: check-yaml
       name: "[pre-commit/pre-commit-hooks]check-yaml"
+      args: ['--unsafe']
     - id: check-json
       name: "[pre-commit/pre-commit-hooks]check-json"
     - id: pretty-format-json
       name: "[pre-commit/pre-commit-hooks]pretty-format-json"
-      args: ['--autofix']
+      args: ['--autofix', '--no-ensure-ascii', '--no-sort-keys']
     - id: check-merge-conflict
       name: "[pre-commit/pre-commit-hooks]check-merge-conflict"
     - id: check-executables-have-shebangs
@@ -45,18 +46,18 @@ repos:
     - id: detect-private-key
       name: "[pre-commit/pre-commit-hooks]detect-private-key"
 
-- repo: https://github.com/Infrastrukturait/pre-commit-readmegen
-  rev: v0.3.0
-  hooks:
-    - id: readmegen
-      name: "[Infrastrukturait/pre-commit-readmegen]readmegen"
-
 - repo: https://github.com/terraform-docs/terraform-docs
   rev: "v0.16.0"
   hooks:
     - id: terraform-docs-go
       name: "[terraform-docs/terraform-docs]terraform-docs-go"
       args: ["markdown", "table", "--output-file=./docs/terraform.md", "--config=./.terraform-docs.yml", "./"]
+
+- repo: https://github.com/Infrastrukturait/pre-commit-readmegen
+  rev: v0.3.0
+  hooks:
+    - id: readmegen
+      name: "[Infrastrukturait/pre-commit-readmegen]readmegen"
 
 - repo: https://github.com/antonbabenko/pre-commit-terraform
   rev: v1.76.0
