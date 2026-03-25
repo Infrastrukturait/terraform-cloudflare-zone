@@ -60,7 +60,7 @@ Submodules included to root module that can be called independent:
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14 |
-| <a name="requirement_cloudflare"></a> [cloudflare](#requirement\_cloudflare) | >= 3.23 |
+| <a name="requirement_cloudflare"></a> [cloudflare](#requirement\_cloudflare) | >= 3.23, < 5.0.0 |
 
 ### Modules
 
