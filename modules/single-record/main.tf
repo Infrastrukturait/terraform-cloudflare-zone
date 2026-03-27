@@ -10,9 +10,10 @@ resource "cloudflare_record" "this" {
 
   zone_id = data.cloudflare_zones.domain.zones[0].id
 
-  name  = coalesce(var.name, "@")
-  type  = var.type
-  value = var.value
+  name    = coalesce(var.name, "@")
+  type    = var.type
+  value   = var.value
+  comment = var.comment
 
   dynamic "data" {
     for_each = var.data

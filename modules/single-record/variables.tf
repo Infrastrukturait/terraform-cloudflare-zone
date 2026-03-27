@@ -18,6 +18,12 @@ variable "value" {
   description = "The value of the record."
 }
 
+variable "comment" {
+  type        = string
+  default     = null
+  description = "Optional Cloudflare DNS record comment."
+}
+
 variable "priority" {
   type        = number
   default     = 1
