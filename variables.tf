@@ -47,13 +47,13 @@ variable "enable_dnssec" {
   description = "Enable or disable DNSSEC."
 }
 
-
 variable "records" {
   type = list(object({
     record_name = string
     type        = string
     name        = optional(string)
     value       = optional(string)
+    comment     = optional(string)
     data = optional(object({
       algorithm      = optional(number)
       altitude       = optional(number)
@@ -105,10 +105,11 @@ variable "records" {
     Zone's DNS records.
     Possible values:
       * for the `type` argument: \"A\", \"AAAA\", \"CAA\", \"CERT\", \"CNAME\", \"DNSKEY\", \"DS\", \"HTTPS\", \"LOC\", \"MX\", \"NAPTR\", \"NS\", \"PTR\", \"SMIMEA\", \"SPF\", \"SRV\", \"SSHFP\", \"SVCB\", \"TLSA\", \"TXT\", \"URI\".
-      *for the `priority` argument: between 0 and 65535.\nPossible values for the `ttl` argument: between 60 and 86400, or 1 for automatic."
+      * for the `priority` argument: between 0 and 65535.
+      * possible values for the `ttl` argument: between 60 and 86400, or 1 for automatic.
+      * `comment` is an optional Cloudflare DNS record comment.
   EOT
 
-  # The provider does not check if either `value` or `data` is provided at the `terraform plan` stage
   validation {
     condition = alltrue([
       for i in var.records : try(i.value != null || i.data != null)
@@ -116,7 +117,6 @@ variable "records" {
     error_message = "Either the value or the data must be provided for each record."
   }
 
-  # The provider does not validate the `ttl` values at the `terraform plan` stage
   validation {
     condition = alltrue([
       for i in var.records : try(i.ttl == 1 || i.ttl >= 60 && i.ttl <= 86400, true)
@@ -124,7 +124,6 @@ variable "records" {
     error_message = "The ttl values must be between 60 and 86400, or 1 for automatic."
   }
 
-  # Actually, `priority` values validation is not required, it accepts any values, including negative ones, but for values outside the range from 0 to 65535, the resulting value may be unexpected for the end user
   validation {
     condition = alltrue([
       for i in var.records : try(i.priority >= 0 && i.priority <= 65535, true)
@@ -132,7 +131,6 @@ variable "records" {
     error_message = "The priority values must be between 0 and 65535."
   }
 
-  # The provider does not check if `priority` are provided for "MX" type records at the `terraform plan` stage
   validation {
     condition = alltrue([
       for i in var.records : try(i.type == "MX" ? i.priority != null : true)
