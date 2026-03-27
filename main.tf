@@ -22,9 +22,10 @@ resource "cloudflare_record" "this" {
 
   zone_id = local.zone_id
 
-  name  = coalesce(each.value.name, "@")
-  type  = each.value.type
-  value = each.value.value
+  name    = coalesce(each.value.name, "@")
+  type    = each.value.type
+  value   = each.value.value
+  comment = lookup(each.value, "comment", null)
 
   dynamic "data" {
     for_each = each.value.value == null && each.value.data != null ? [1] : []
