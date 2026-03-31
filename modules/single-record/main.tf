@@ -14,7 +14,7 @@ resource "cloudflare_dns_record" "this" {
   name    = coalesce(var.name, "@")
   type    = var.type
   content = var.value
-  comment = var.comment
+  comment = trimspace(coalesce(var.comment, "")) != "" ? var.comment : null
   data    = length(var.data) > 0 ? var.data[0] : null
 
   priority = var.priority

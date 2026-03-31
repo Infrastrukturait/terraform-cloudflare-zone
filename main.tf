@@ -28,9 +28,9 @@ resource "cloudflare_dns_record" "this" {
   type    = each.value.type
   content = each.value.value
   comment = coalesce(try(each.value.comment, null), local.global_comment)
-  data    = each.value.value == null ? each.value.data : null
+  data    = each.value.value == null ? try(each.value.data, null) : null
 
-  priority = lookup(each.value, "priority", null)
-  proxied  = lookup(each.value, "proxied", false)
-  ttl      = lookup(each.value, "ttl", 1)
+  priority = try(each.value.priority, null)
+  proxied  = coalesce(try(each.value.proxied, null), false)
+  ttl      = coalesce(try(each.value.ttl, null), 1)
 }
