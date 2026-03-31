@@ -5,7 +5,6 @@ variable "zone" {
 
 variable "account_id" {
   type        = string
-  default     = ""
   description = "Account ID to manage the zone resource in. You can get more information on how to find `account_id` at [this page](https://developers.cloudflare.com/fundamentals/get-started/basic-tasks/find-account-and-zone-ids/)."
 }
 
@@ -13,22 +12,6 @@ variable "paused" {
   type        = bool
   default     = false
   description = "Indicates if the zone is only using Cloudflare DNS services. A true value means the zone will not receive security or performance benefits."
-}
-
-variable "jump_start" {
-  type        = bool
-  default     = false
-  description = "Automatically attempt to fetch existing DNS records on creation. Ignored after zone is created."
-}
-
-variable "plan" {
-  type        = string
-  default     = "free"
-  description = <<-EOT
-    The desired plan for the zone. Can be updated once the one is created. Changing this value will create/cancel associated subscriptions.
-    Possible values: `free`, `partners_free`, `pro`, `partners_pro`, `business`, `partners_business`, `enterprise`, `partners_enterprise`."
-    You can get more information about available plans at [this page](https://www.cloudflare.com/plans/).
-  EOT
 }
 
 variable "type" {
@@ -39,7 +22,6 @@ variable "type" {
     To learn more and choose the right configuration for you, see the documentation about [full](https://developers.cloudflare.com/dns/zone-setups/full-setup/) or [partial CNAME](https://developers.cloudflare.com/dns/zone-setups/partial-setup/) setups.
   EOT
 }
-
 
 variable "enable_dnssec" {
   type        = bool
@@ -95,10 +77,9 @@ variable "records" {
       value          = optional(string)
       weight         = optional(number)
     }))
-    priority        = optional(number)
-    ttl             = optional(number)
-    proxied         = optional(bool)
-    allow_overwrite = optional(bool)
+    priority = optional(number)
+    ttl      = optional(number)
+    proxied  = optional(bool)
   }))
   default     = []
   description = <<-EOT
@@ -137,4 +118,10 @@ variable "records" {
     ])
     error_message = "The priority must not be null for each record of type \"MX\"."
   }
+}
+
+variable "comment" {
+  type        = string
+  default     = ""
+  description = "Optional global comment added to all DNS records that do not define their own comment."
 }

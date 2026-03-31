@@ -18,6 +18,12 @@ variable "value" {
   description = "The value of the record."
 }
 
+variable "account_id" {
+  type        = string
+  default     = ""
+  description = "Cloudflare account ID."
+}
+
 variable "comment" {
   type        = string
   default     = null
@@ -50,12 +56,6 @@ variable "proxied" {
   type        = bool
   default     = false
   description = "Set the record to gets Cloudflare's origin protection"
-}
-
-variable "allow_overwrite" {
-  type        = bool
-  default     = false
-  description = "Allow creation of this record in Terraform to overwrite an existing record, if any."
 }
 
 variable "data" {
