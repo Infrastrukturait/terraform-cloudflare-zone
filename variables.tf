@@ -5,7 +5,6 @@ variable "zone" {
 
 variable "account_id" {
   type        = string
-  default     = ""
   description = "Account ID to manage the zone resource in. You can get more information on how to find `account_id` at [this page](https://developers.cloudflare.com/fundamentals/get-started/basic-tasks/find-account-and-zone-ids/)."
 }
 
@@ -13,22 +12,6 @@ variable "paused" {
   type        = bool
   default     = false
   description = "Indicates if the zone is only using Cloudflare DNS services. A true value means the zone will not receive security or performance benefits."
-}
-
-variable "jump_start" {
-  type        = bool
-  default     = false
-  description = "Automatically attempt to fetch existing DNS records on creation. Ignored after zone is created."
-}
-
-variable "plan" {
-  type        = string
-  default     = "free"
-  description = <<-EOT
-    The desired plan for the zone. Can be updated once the one is created. Changing this value will create/cancel associated subscriptions.
-    Possible values: `free`, `partners_free`, `pro`, `partners_pro`, `business`, `partners_business`, `enterprise`, `partners_enterprise`."
-    You can get more information about available plans at [this page](https://www.cloudflare.com/plans/).
-  EOT
 }
 
 variable "type" {
@@ -40,13 +23,11 @@ variable "type" {
   EOT
 }
 
-
 variable "enable_dnssec" {
   type        = bool
   default     = false
   description = "Enable or disable DNSSEC."
 }
-
 
 variable "records" {
   type = list(object({
@@ -54,6 +35,7 @@ variable "records" {
     type        = string
     name        = optional(string)
     value       = optional(string)
+    comment     = optional(string)
     data = optional(object({
       algorithm      = optional(number)
       altitude       = optional(number)
@@ -95,20 +77,20 @@ variable "records" {
       value          = optional(string)
       weight         = optional(number)
     }))
-    priority        = optional(number)
-    ttl             = optional(number)
-    proxied         = optional(bool)
-    allow_overwrite = optional(bool)
+    priority = optional(number)
+    ttl      = optional(number)
+    proxied  = optional(bool)
   }))
   default     = []
   description = <<-EOT
     Zone's DNS records.
     Possible values:
       * for the `type` argument: \"A\", \"AAAA\", \"CAA\", \"CERT\", \"CNAME\", \"DNSKEY\", \"DS\", \"HTTPS\", \"LOC\", \"MX\", \"NAPTR\", \"NS\", \"PTR\", \"SMIMEA\", \"SPF\", \"SRV\", \"SSHFP\", \"SVCB\", \"TLSA\", \"TXT\", \"URI\".
-      *for the `priority` argument: between 0 and 65535.\nPossible values for the `ttl` argument: between 60 and 86400, or 1 for automatic."
+      * for the `priority` argument: between 0 and 65535.
+      * possible values for the `ttl` argument: between 60 and 86400, or 1 for automatic.
+      * `comment` is an optional Cloudflare DNS record comment.
   EOT
 
-  # The provider does not check if either `value` or `data` is provided at the `terraform plan` stage
   validation {
     condition = alltrue([
       for i in var.records : try(i.value != null || i.data != null)
@@ -116,7 +98,6 @@ variable "records" {
     error_message = "Either the value or the data must be provided for each record."
   }
 
-  # The provider does not validate the `ttl` values at the `terraform plan` stage
   validation {
     condition = alltrue([
       for i in var.records : try(i.ttl == 1 || i.ttl >= 60 && i.ttl <= 86400, true)
@@ -124,7 +105,6 @@ variable "records" {
     error_message = "The ttl values must be between 60 and 86400, or 1 for automatic."
   }
 
-  # Actually, `priority` values validation is not required, it accepts any values, including negative ones, but for values outside the range from 0 to 65535, the resulting value may be unexpected for the end user
   validation {
     condition = alltrue([
       for i in var.records : try(i.priority >= 0 && i.priority <= 65535, true)
@@ -132,11 +112,16 @@ variable "records" {
     error_message = "The priority values must be between 0 and 65535."
   }
 
-  # The provider does not check if `priority` are provided for "MX" type records at the `terraform plan` stage
   validation {
     condition = alltrue([
       for i in var.records : try(i.type == "MX" ? i.priority != null : true)
     ])
     error_message = "The priority must not be null for each record of type \"MX\"."
   }
+}
+
+variable "comment" {
+  type        = string
+  default     = ""
+  description = "Optional global comment added to all DNS records that do not define their own comment."
 }
