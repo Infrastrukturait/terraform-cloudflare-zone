@@ -5,6 +5,7 @@ variable "domain_name" {
 
 variable "name" {
   type        = string
+  default     = null
   description = "The name of the record."
 }
 
@@ -15,7 +16,13 @@ variable "type" {
 
 variable "value" {
   type        = string
+  default     = null
   description = "The value of the record."
+
+  validation {
+    condition     = (var.value != null && length(var.data) == 0) || (var.value == null && length(var.data) > 0)
+    error_message = "Exactly one of value or data must be provided."
+  }
 }
 
 variable "account_id" {
@@ -101,5 +108,5 @@ variable "data" {
     weight         = optional(number)
   }))
   default     = []
-  description = "Map of metadata for a record."
+  description = "List of metadata objects for a record."
 }
