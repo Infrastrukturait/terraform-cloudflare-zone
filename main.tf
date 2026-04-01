@@ -23,7 +23,7 @@ locals {
   }
 
   mx_records = var.mx == null ? [] : flatten([
-    for name in try(var.mx.names, ["@"]) : [
+    for name in coalesce(try(var.mx.names, null), ["@"]) : [
       for server in var.mx.servers : {
         record_name = format(
           "helper-mx-%s-%05d-%s",
@@ -44,9 +44,9 @@ locals {
 
   spf_terms = var.spf == null ? [] : concat(
     ["v=spf1"],
-    [for include in try(var.spf.includes, []) : "include:${include}"],
-    [for ip4 in try(var.spf.ip4s, []) : "ip4:${ip4}"],
-    [for ip6 in try(var.spf.ip6s, []) : "ip6:${ip6}"],
+    [for include in coalesce(try(var.spf.includes, null), []) : "include:${include}"],
+    [for ip4 in coalesce(try(var.spf.ip4s, null), []) : "ip4:${ip4}"],
+    [for ip6 in coalesce(try(var.spf.ip6s, null), []) : "ip6:${ip6}"],
     try(var.spf.a, false) ? ["a"] : [],
     try(var.spf.mx, false) ? ["mx"] : [],
     try(var.spf.redirect, null) != null ? ["redirect=${var.spf.redirect}"] : [],
@@ -78,8 +78,8 @@ locals {
       "adkim=${local.helper_dmarc_alignment_map[try(var.dmarc.dkim_mode, "relaxed")]};"
     ],
     try(var.dmarc.subdomain_policy, null) != null ? ["sp=${var.dmarc.subdomain_policy};"] : [],
-    length(try(var.dmarc.rua, [])) > 0 ? ["rua=${join(",", var.dmarc.rua)};"] : [],
-    length(try(var.dmarc.ruf, [])) > 0 ? ["ruf=${join(",", var.dmarc.ruf)};"] : [],
+    length(coalesce(try(var.dmarc.rua, null), [])) > 0 ? ["rua=${join(",", coalesce(try(var.dmarc.rua, null), []))};"] : [],
+    length(coalesce(try(var.dmarc.ruf, null), [])) > 0 ? ["ruf=${join(",", coalesce(try(var.dmarc.ruf, null), []))};"] : [],
     try(var.dmarc.fo, null) != null ? ["fo=${var.dmarc.fo};"] : []
   )
 
@@ -193,7 +193,7 @@ resource "cloudflare_ruleset" "this" {
   phase       = each.value.phase
 
   rules = [
-    for rule in try(each.value.rules, []) : {
+    for rule in coalesce(try(each.value.rules, null), []) : {
       ref         = rule.ref
       action      = rule.action
       expression  = try(rule.expression, null)
@@ -227,7 +227,7 @@ resource "cloudflare_ruleset" "this" {
           default = try(rule.action_parameters.edge_ttl.default, null)
 
           status_code_ttl = [
-            for status_code_ttl in try(rule.action_parameters.edge_ttl.status_code_ttl, []) : {
+            for status_code_ttl in coalesce(try(rule.action_parameters.edge_ttl.status_code_ttl, null), []) : {
               status_code = try(status_code_ttl.status_code, null)
 
               status_code_range = try(status_code_ttl.status_code_range, null) != null ? {
