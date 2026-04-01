@@ -184,8 +184,8 @@ resource "cloudflare_zone_setting" "this" {
 resource "cloudflare_ruleset" "this" {
   for_each = local.rulesets_by_key
 
-  zone_id    = try(each.value.account_level, false) ? null : local.zone_id
-  account_id = try(each.value.account_level, false) ? var.account_id : null
+  zone_id    = coalesce(try(each.value.account_level, null), false) ? null : local.zone_id
+  account_id = coalesce(try(each.value.account_level, null), false) ? var.account_id : null
 
   name        = each.value.name
   description = try(each.value.description, null)
@@ -212,97 +212,75 @@ resource "cloudflare_ruleset" "this" {
           content_type = try(rule.action_parameters.response.content_type, null)
         } : null
 
-        from_value = try(rule.action_parameters.from_value, null) != null ? [
-          {
-            status_code           = try(rule.action_parameters.from_value.status_code, null)
-            preserve_query_string = try(rule.action_parameters.from_value.preserve_query_string, null)
+        from_value = try(rule.action_parameters.from_value, null) != null ? {
+          status_code           = try(rule.action_parameters.from_value.status_code, null)
+          preserve_query_string = try(rule.action_parameters.from_value.preserve_query_string, null)
 
-            target_url = try(rule.action_parameters.from_value.target_url, null) != null ? [
-              {
-                value      = try(rule.action_parameters.from_value.target_url.value, null)
-                expression = try(rule.action_parameters.from_value.target_url.expression, null)
-              }
-            ] : null
-          }
-        ] : null
+          target_url = try(rule.action_parameters.from_value.target_url, null) != null ? {
+            value      = try(rule.action_parameters.from_value.target_url.value, null)
+            expression = try(rule.action_parameters.from_value.target_url.expression, null)
+          } : null
+        } : null
 
-        edge_ttl = try(rule.action_parameters.edge_ttl, null) != null ? [
-          {
-            mode    = rule.action_parameters.edge_ttl.mode
-            default = try(rule.action_parameters.edge_ttl.default, null)
+        edge_ttl = try(rule.action_parameters.edge_ttl, null) != null ? {
+          mode    = rule.action_parameters.edge_ttl.mode
+          default = try(rule.action_parameters.edge_ttl.default, null)
 
-            status_code_ttl = [
-              for status_code_ttl in try(rule.action_parameters.edge_ttl.status_code_ttl, []) : {
-                status_code = try(status_code_ttl.status_code, null)
+          status_code_ttl = [
+            for status_code_ttl in try(rule.action_parameters.edge_ttl.status_code_ttl, []) : {
+              status_code = try(status_code_ttl.status_code, null)
 
-                status_code_range = try(status_code_ttl.status_code_range, null) != null ? [
-                  {
-                    from = status_code_ttl.status_code_range.from
-                    to   = status_code_ttl.status_code_range.to
-                  }
-                ] : null
+              status_code_range = try(status_code_ttl.status_code_range, null) != null ? {
+                from = status_code_ttl.status_code_range.from
+                to   = status_code_ttl.status_code_range.to
+              } : null
 
-                value = status_code_ttl.value
-              }
-            ]
-          }
-        ] : null
+              value = status_code_ttl.value
+            }
+          ]
+        } : null
 
-        browser_ttl = try(rule.action_parameters.browser_ttl, null) != null ? [
-          {
-            mode    = rule.action_parameters.browser_ttl.mode
-            default = try(rule.action_parameters.browser_ttl.default, null)
-          }
-        ] : null
+        browser_ttl = try(rule.action_parameters.browser_ttl, null) != null ? {
+          mode    = rule.action_parameters.browser_ttl.mode
+          default = try(rule.action_parameters.browser_ttl.default, null)
+        } : null
 
-        serve_stale = try(rule.action_parameters.serve_stale, null) != null ? [
-          {
-            disable_stale_while_updating = try(rule.action_parameters.serve_stale.disable_stale_while_updating, null)
-          }
-        ] : null
+        serve_stale = try(rule.action_parameters.serve_stale, null) != null ? {
+          disable_stale_while_updating = try(rule.action_parameters.serve_stale.disable_stale_while_updating, null)
+        } : null
 
-        cache_key = try(rule.action_parameters.cache_key, null) != null ? [
-          {
-            ignore_query_strings_order = try(rule.action_parameters.cache_key.ignore_query_strings_order, null)
-            cache_by_device_type       = try(rule.action_parameters.cache_key.cache_by_device_type, null)
-          }
-        ] : null
+        cache_key = try(rule.action_parameters.cache_key, null) != null ? {
+          ignore_query_strings_order = try(rule.action_parameters.cache_key.ignore_query_strings_order, null)
+          cache_by_device_type       = try(rule.action_parameters.cache_key.cache_by_device_type, null)
+        } : null
 
-        uri = try(rule.action_parameters.uri, null) != null ? [
-          {
-            path = try(rule.action_parameters.uri.path, null) != null ? [
-              {
-                value      = try(rule.action_parameters.uri.path.value, null)
-                expression = try(rule.action_parameters.uri.path.expression, null)
-              }
-            ] : null
-          }
-        ] : null
+        uri = try(rule.action_parameters.uri, null) != null ? {
+          path = try(rule.action_parameters.uri.path, null) != null ? {
+            value      = try(rule.action_parameters.uri.path.value, null)
+            expression = try(rule.action_parameters.uri.path.expression, null)
+          } : null
+        } : null
       } : null
 
       logging = try(rule.logging, null) != null ? {
         enabled = rule.logging.enabled
       } : null
 
-      ratelimit = try(rule.ratelimit, null) != null ? [
-        {
-          characteristics            = rule.ratelimit.characteristics
-          period                     = rule.ratelimit.period
-          requests_per_period        = rule.ratelimit.requests_per_period
-          mitigation_timeout         = rule.ratelimit.mitigation_timeout
-          requests_to_origin         = try(rule.ratelimit.requests_to_origin, null)
-          score_per_period           = try(rule.ratelimit.score_per_period, null)
-          score_response_header_name = try(rule.ratelimit.score_response_header_name, null)
-          counting_expression        = try(rule.ratelimit.counting_expression, null)
-        }
-      ] : null
+      ratelimit = try(rule.ratelimit, null) != null ? {
+        characteristics            = rule.ratelimit.characteristics
+        period                     = rule.ratelimit.period
+        requests_per_period        = rule.ratelimit.requests_per_period
+        mitigation_timeout         = rule.ratelimit.mitigation_timeout
+        requests_to_origin         = try(rule.ratelimit.requests_to_origin, null)
+        score_per_period           = try(rule.ratelimit.score_per_period, null)
+        score_response_header_name = try(rule.ratelimit.score_response_header_name, null)
+        counting_expression        = try(rule.ratelimit.counting_expression, null)
+      } : null
 
-      exposed_credential_check = try(rule.exposed_credential_check, null) != null ? [
-        {
-          username_expression = rule.exposed_credential_check.username_expression
-          password_expression = rule.exposed_credential_check.password_expression
-        }
-      ] : null
+      exposed_credential_check = try(rule.exposed_credential_check, null) != null ? {
+        username_expression = rule.exposed_credential_check.username_expression
+        password_expression = rule.exposed_credential_check.password_expression
+      } : null
     }
   ]
 }
