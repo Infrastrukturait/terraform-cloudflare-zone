@@ -1,5 +1,5 @@
 name: Workflow Keepalive
-description: Re-enable workflows (self or provided list)
+description: Re-enable workflows disabled due to 30 days of inactivity
 branding:
   icon: activity
   color: red
