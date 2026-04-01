@@ -20,7 +20,7 @@ output "status" {
 
 output "vanity_name_servers" {
   value       = cloudflare_zone.this.vanity_name_servers
-  description = "List of Vanity Nameservers (if set)."
+  description = "List of Vanity Nameservers, if set."
 }
 
 output "verification_key" {
@@ -50,12 +50,12 @@ output "key_type" {
 
 output "digest_type" {
   value       = try(cloudflare_zone_dnssec.this[0].digest_type, null)
-  description = "Digest Type for Zone DNSSEC."
+  description = "Digest Type for the Zone DNSSEC."
 }
 
 output "digest_algorithm" {
   value       = try(cloudflare_zone_dnssec.this[0].digest_algorithm, null)
-  description = "Digest algorithm use for Zone DNSSEC."
+  description = "Digest algorithm used for Zone DNSSEC."
 }
 
 output "digest" {
@@ -85,12 +85,17 @@ output "modified_on" {
 
 output "record_ids" {
   value       = { for k, v in cloudflare_dns_record.this : k => v.id }
-  description = "The record IDs."
+  description = "The record IDs keyed by the module's managed record key."
+}
+
+output "record_names" {
+  value       = { for k, v in cloudflare_dns_record.this : k => v.name }
+  description = "The managed DNS record names keyed by the module's managed record key."
 }
 
 output "record_proxiable" {
   value       = { for k, v in cloudflare_dns_record.this : k => v.proxiable }
-  description = "Shows whether these records can be proxied, must be true if setting proxied=true."
+  description = "Shows whether these records can be proxied. This must be true if setting proxied = true."
 }
 
 output "record_modified_on" {
