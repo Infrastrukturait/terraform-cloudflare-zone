@@ -135,8 +135,19 @@ locals {
     local.dkim_records,
   )
 
+  all_records_normalized = [
+    for record in local.all_records : merge(record, {
+      value = try(record.value, null) == null ? null : (
+        upper(record.type) == "TXT" &&
+        !can(regex("^\".*\"$", trimspace(record.value)))
+        ? format("\"%s\"", record.value)
+        : record.value
+      )
+    })
+  ]
+
   all_records_by_key = {
-    for record in local.all_records : record.record_name => record
+    for record in local.all_records_normalized : record.record_name => record
   }
 }
 
