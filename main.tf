@@ -137,11 +137,28 @@ locals {
 
   all_records_normalized = [
     for record in local.all_records : merge(record, {
+      name = (
+        try(record.name, null) == null || trimspace(record.name) == "" || trimspace(record.name) == "@"
+        ? "@"
+        : (
+          lower(trimspace(record.name)) == lower(var.zone) ||
+          endswith(lower(trimspace(record.name)), ".${lower(var.zone)}")
+          ? trimspace(record.name)
+          : "${trimspace(record.name)}.${var.zone}"
+        )
+      )
+
       value = try(record.value, null) == null ? null : (
-        upper(record.type) == "TXT" &&
-        !can(regex("^\".*\"$", trimspace(record.value)))
-        ? format("\"%s\"", record.value)
-        : record.value
+        upper(record.type) != "TXT"
+        ? record.value
+        : (
+          can(regex("^\".*\"$", trimspace(record.value)))
+          ? record.value
+          : join(" ", [
+            for chunk in chunklist(split("", record.value), 255) :
+            "\"${join("", chunk)}\""
+          ])
+        )
       )
     })
   ]
